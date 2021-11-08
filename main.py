@@ -108,8 +108,7 @@ while run:
       block_coordinates[0][value] = randint(0, 480)
 
 
-    #collisions (WIP)
-    #use the website in the README. It has much simpler methods for getting collisions. 
+    #collisions
     enemy_hit_box = pygame.Rect(block_coordinates[0][value], block_coordinates[1][value], fallingblock_width, fallingblock_height)
     player_hit_box = pygame.Rect(player_x, player_y, player_width, player_height)
     collide = player_hit_box.colliderect(enemy_hit_box)
