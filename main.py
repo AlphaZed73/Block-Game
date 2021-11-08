@@ -10,7 +10,7 @@ pygame.mixer.init()
 pygame.mixer.music.load("theme.mp3")
 pygame.mixer.music.play(-1)
 
-#variables
+#variables and parameters
 lives = 10
 score = 0
 player_x = 10
