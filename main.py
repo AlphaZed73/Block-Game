@@ -1,9 +1,14 @@
+#imports and initialization
 import pygame
 from random import randint
 pygame.init()
-
 window = pygame.display.set_mode((500, 500))
 pygame.display.set_caption("AlphaZed's Block Game")
+
+#mixer music
+pygame.mixer.init()
+pygame.mixer.music.load("theme.mp3")
+pygame.mixer.music.play("theme.mp3", -1)
 
 #variables
 lives = 10
@@ -19,8 +24,12 @@ jumpCount = jump_height
 fallingblock_height = 20
 fallingblock_width = 20
 enemy_speed = 10
+score_counter = 0
 
-#matrix
+#tickspeed in milliseconds
+tickspeed = 50
+
+#matrix for enemy coords
 block_coordinates = [
   [
     0, 0, 0, 0
@@ -32,13 +41,29 @@ block_coordinates = [
 for coord in range(0,len(block_coordinates[0])):
   block_coordinates[0][coord] = randint(0,480)
 
+#scoreboard
+font = pygame.font.Font('slkscr.ttf', 12)
+text = font.render(f"Score: {score} Lives: {lives}", True, (255, 255 , 255), (0, 0, 0))
+
+textRect = text.get_rect()
+textRect.center = (70, 10)
 
 run = True
-print(block_coordinates)
+
 #run loop
 while run:
   #slows down the program to not crash computer
-  pygame.time.delay(50)
+  pygame.time.delay(tickspeed)
+
+  #timer
+  if score_counter == 1000 / tickspeed:
+    score_counter = 0
+    score += 1
+  else:
+    score_counter += 1
+  
+  #update score and lives on the scoreboard
+  text = font.render(f"Score: {score} Lives: {lives}", True, (255, 255 , 255), (0, 0, 0))
 
   #quit button detection
   for event in pygame.event.get():
@@ -75,20 +100,25 @@ while run:
   
   #enemy logic (collisions and moving to the top)
   for value in range(0,len(block_coordinates[1])):
-    block_coordinates[1][value] += randint(1,enemy_speed)
+    block_coordinates[1][value] += randint(1, enemy_speed)
+
+    #move to top
     if block_coordinates[1][value] >= 480:
       block_coordinates[1][value] = 0
       block_coordinates[0][value] = randint(0,480)
 
 
-#collisions
+    #collisions (WIP)
     if block_coordinates[1][value] >= player_y + player_height and block_coordinates[1][value] <= player_y and block_coordinates[0][value] >= player_y + player_height:
       lives -=1
       block_coordinates[1][value]=0
       block_coordinates[0][value]=randint(0,480)
+
+    #life check
     if lives <= 0:
         pygame.quit()
         quit()
+
   #update the screen and draw the character
   window.fill((0, 0, 0))
   pygame.draw.rect(window, (0, 255, 0), (player_x, player_y, player_width, player_height))
@@ -96,10 +126,12 @@ while run:
   #draw enemies
   for enemy in range(0,4):
     pygame.draw.rect(window, (255, 0, 0), (block_coordinates[0][enemy], block_coordinates[1][enemy], fallingblock_width, fallingblock_height))
- 
-  print(lives)
+  
+  #draw scoreboard
+  window.blit(text, textRect)
   pygame.display.update()
 
+#end program
 pygame.quit()
 quit()
 
