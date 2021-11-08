@@ -118,6 +118,7 @@ while run:
       lives -= 1
       block_coordinates[1][value] = 0
       if lives <= 0:
+        pygame.time.delay(2000)
         pygame.quit()
         quit()
 
