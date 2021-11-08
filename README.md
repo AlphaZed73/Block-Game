@@ -8,7 +8,7 @@ The scoreboard in the top left corner shows how long you have survived and how m
 ### Todo
 - Collisions (use the website below)
 - Enemies coming from the side
-- Work out movement controls (jumping or side-side movement?)
+- Work out movement controls (jumping or up-down movement?)
 - Random enemy colors
 - Random numbers of enemies
 - Create highscore using the Replit database. Add a leaderboard that pops up with the press of a button. 
