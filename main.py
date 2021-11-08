@@ -7,8 +7,9 @@ pygame.display.set_caption("AlphaZed's Block Game")
 
 #mixer music
 pygame.mixer.init()
+pygame.mixer.music.set_volume(4.0)
 pygame.mixer.music.load("theme.mp3")
-pygame.mixer.music.play(-1)
+pygame.mixer.music.play()
 
 #variables and parameters
 lives = 10
@@ -101,12 +102,11 @@ while run:
   #enemy logic (collisions and moving to the top)
   for value in range(0,len(block_coordinates[1])):
     block_coordinates[1][value] += randint(1, enemy_speed)
-
+    
     #move to top
     if block_coordinates[1][value] >= 480:
       block_coordinates[1][value] = 0
       block_coordinates[0][value] = randint(0, 480)
-
 
     #collisions
     enemy_hit_box = pygame.Rect(block_coordinates[0][value], block_coordinates[1][value], fallingblock_width, fallingblock_height)
@@ -121,7 +121,6 @@ while run:
         pygame.time.delay(2000)
         pygame.quit()
         quit()
-
   #update the screen and draw the character
   window.fill((0, 0, 0))
   pygame.draw.rect(window, (0, 255, 0), (player_x, player_y, player_width, player_height))
