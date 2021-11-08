@@ -105,7 +105,7 @@ while run:
     #move to top
     if block_coordinates[1][value] >= 480:
       block_coordinates[1][value] = 0
-      block_coordinates[0][value] = randint(0,480)
+      block_coordinates[0][value] = randint(0, 480)
 
 
     #collisions (WIP)
@@ -117,6 +117,7 @@ while run:
     if collide == True:
       lives -= 1
       block_coordinates[1][value] = 0
+      block_coordinates[0][value] = randint(0, 480)
       if lives <= 0:
         pygame.time.delay(2000)
         pygame.quit()
