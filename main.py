@@ -12,9 +12,9 @@ pygame.mixer.music.load("theme.mp3")
 pygame.mixer.music.play()
 
 #variables and parameters
-lives = 10
+lives = 3
 score = 0
-player_x = 10
+player_x = 240
 player_y = 460
 player_width = 20
 player_height = 30
@@ -26,6 +26,8 @@ fallingblock_height = 20
 fallingblock_width = 20
 enemy_speed = 10
 score_counter = 0
+enemy_counter = 0
+enemy_interval = randint(1, 4)
 
 #tickspeed in milliseconds
 tickspeed = 50
@@ -33,10 +35,8 @@ tickspeed = 50
 #matrix for enemy coords
 block_coordinates = [
   [
-    0, 0, 0, 0
   ],
   [
-    0, 0, 0, 0
   ]
 ]
 for coord in range(0,len(block_coordinates[0])):
@@ -60,6 +60,13 @@ while run:
   if score_counter == 1000 / tickspeed:
     score_counter = 0
     score += 1
+    enemy_counter += 1
+    #add new enemy after interval
+    if enemy_counter == enemy_interval:
+      block_coordinates[0].append(randint(0, 480))
+      block_coordinates[1].append(0)
+      enemy_counter = 0
+      enemy_interval = randint(1, 4)
   else:
     score_counter += 1
   
@@ -102,7 +109,19 @@ while run:
     else:
       isJump = False
       jumpCount = jump_height
+
+  #update the screen and draw the character
+  window.fill((0, 0, 0))
+  pygame.draw.rect(window, (0, 255, 0), (player_x, player_y, player_width, player_height))
+
+  #draw enemies
+  for enemy in range(0,len(block_coordinates[0])):
+    pygame.draw.rect(window, (255, 0, 0), (block_coordinates[0][enemy], block_coordinates[1][enemy], fallingblock_width, fallingblock_height))
   
+  #draw scoreboard
+  window.blit(text, textRect)
+  pygame.display.update()
+
   #enemy logic (collisions and moving to the top)
   for value in range(0,len(block_coordinates[1])):
     block_coordinates[1][value] += randint(1, enemy_speed)
@@ -125,19 +144,6 @@ while run:
         pygame.time.delay(2000)
         pygame.quit()
         quit()
-  
-
-  #update the screen and draw the character
-  window.fill((0, 0, 0))
-  pygame.draw.rect(window, (0, 255, 0), (player_x, player_y, player_width, player_height))
-
-  #draw enemies
-  for enemy in range(0,4):
-    pygame.draw.rect(window, (255, 0, 0), (block_coordinates[0][enemy], block_coordinates[1][enemy], fallingblock_width, fallingblock_height))
-  
-  #draw scoreboard
-  window.blit(text, textRect)
-  pygame.display.update()
 
 #end program
 pygame.quit()
