@@ -8,7 +8,7 @@ pygame.display.set_caption("AlphaZed's Block Game")
 #mixer music
 pygame.mixer.init()
 pygame.mixer.music.load("theme.mp3")
-pygame.mixer.music.play("theme.mp3", -1)
+pygame.mixer.music.play(-1)
 
 #variables
 lives = 10
