@@ -110,18 +110,14 @@ while run:
 
     #collisions (WIP)
     #use the website in the README. It has much simpler methods for getting collisions. 
-    """
-    if block_coordinates[1][value] >= player_y + player_height and block_coordinates[1][value] <= player_y and block_coordinates[0][value] >= player_y + player_height:
-  
-    for x in range(player_x,player_x+20):
-      for y in range(player_y,player_y+30):
-        if x in range(block_coordinates[0][value],block_coordinates[0][value]+20) and y in range(block_coordinates[1][value],block_coordinates[1][value]+20):
-          lives -=1
-          block_coordinates[1][value]=0
-          block_coordinates[0][value]=randint(0,480)"""
-
+    enemy_hit_box = pygame.Rect(block_coordinates[0][value], block_coordinates[1][value], fallingblock_width, fallingblock_height)
+    player_hit_box = pygame.Rect(player_x, player_y, player_width, player_height)
+    collide = player_hit_box.colliderect(enemy_hit_box)
     #life check
-    if lives <= 0:
+    if collide == True:
+      lives -= 1
+      block_coordinates[1][value] = 0
+      if lives <= 0:
         pygame.quit()
         quit()
 
