@@ -1,5 +1,5 @@
 # Block Game
-### Create new branches for projects. The old ones often will not have some of the files that the main does, like music or font files. If you are making edits, create a new branch.
+### Create new branches for projects. The old ones often will not have some of the files that the main does, like music or font files. If you are making major edits, create a new branch.
 ---
 This is a game where you need to dodge blocks that are falling from the sky and coming from the sides. Control the green block using `left`, `right`, and `up` arrow keys. 
 The scoreboard in the top left corner shows how long you have survived and how many more lives you have. 
