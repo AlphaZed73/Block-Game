@@ -28,6 +28,10 @@ enemy_speed = 10
 score_counter = 0
 enemy_counter = 0
 enemy_interval = randint(1, 4)
+enemy_colors = []
+min_red = 200
+max_blue = 64
+max_green = 64
 
 #tickspeed in milliseconds
 tickspeed = 50
@@ -65,6 +69,7 @@ while run:
     if enemy_counter == enemy_interval:
       block_coordinates[0].append(randint(0, 480))
       block_coordinates[1].append(0)
+      enemy_colors.append((randint(min_red, 255), randint(0, max_green), randint(0, max_blue)))
       enemy_counter = 0
       enemy_interval = randint(1, 4)
   else:
@@ -116,7 +121,7 @@ while run:
 
   #draw enemies
   for enemy in range(0,len(block_coordinates[0])):
-    pygame.draw.rect(window, (255, 0, 0), (block_coordinates[0][enemy], block_coordinates[1][enemy], fallingblock_width, fallingblock_height))
+    pygame.draw.rect(window, enemy_colors[enemy], (block_coordinates[0][enemy], block_coordinates[1][enemy], fallingblock_width, fallingblock_height))
   
   #draw scoreboard
   window.blit(text, textRect)
@@ -130,6 +135,7 @@ while run:
     if block_coordinates[1][value] >= 480:
       block_coordinates[1][value] = 0
       block_coordinates[0][value] = randint(0, 480)
+      enemy_colors[value] = (randint(min_red, 255), randint(0, max_green), randint(0, max_blue))
 
     #collisions
     enemy_hit_box = pygame.Rect(block_coordinates[0][value], block_coordinates[1][value], fallingblock_width, fallingblock_height)
