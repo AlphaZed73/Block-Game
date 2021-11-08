@@ -109,10 +109,16 @@ while run:
 
 
     #collisions (WIP)
+    #use the website in the README. It has much simpler methods for getting collisions. 
+    """
     if block_coordinates[1][value] >= player_y + player_height and block_coordinates[1][value] <= player_y and block_coordinates[0][value] >= player_y + player_height:
-      lives -=1
-      block_coordinates[1][value]=0
-      block_coordinates[0][value]=randint(0,480)
+  
+    for x in range(player_x,player_x+20):
+      for y in range(player_y,player_y+30):
+        if x in range(block_coordinates[0][value],block_coordinates[0][value]+20) and y in range(block_coordinates[1][value],block_coordinates[1][value]+20):
+          lives -=1
+          block_coordinates[1][value]=0
+          block_coordinates[0][value]=randint(0,480)"""
 
     #life check
     if lives <= 0:
