@@ -11,7 +11,9 @@ The scoreboard in the top left corner shows how long you have survived and how m
 - Work out movement controls (jumping or side-side movement?)
 - Random enemy colors
 - Random numbers of enemies
+- Create highscore using the Replit database. Add a leaderboard that pops up with the press of a button. 
+- Get the player's name to display on the leaderboard with their score. 
 
 ### Useful links for writing parts of this game
 [Collision Detection](https://stackoverflow.com/questions/29640685/how-do-i-detect-collision-in-pygame)  
-[Cheat Sheet for writing this md](https://www.markdownguide.org/cheat-sheet/)
+[Guid for writing this Markdown](https://www.markdownguide.org/cheat-sheet/)
