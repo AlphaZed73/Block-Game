@@ -16,4 +16,4 @@ The scoreboard in the top left corner shows how long you have survived and how m
 
 ### Useful links for writing parts of this game
 [Collision Detection](https://stackoverflow.com/questions/29640685/how-do-i-detect-collision-in-pygame)  
-[Guid for writing this Markdown](https://www.markdownguide.org/cheat-sheet/)
+[Guide for writing this Markdown](https://www.markdownguide.org/cheat-sheet/)
