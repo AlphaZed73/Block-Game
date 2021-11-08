@@ -18,7 +18,7 @@ player_x = 10
 player_y = 460
 player_width = 20
 player_height = 30
-speed = 5
+speed = 8
 isJump = False
 jump_height = 7
 jumpCount = jump_height
@@ -73,11 +73,15 @@ while run:
   
   #left and right controls
   keys = pygame.key.get_pressed()
-  if keys[pygame.K_LEFT] and player_x > 0:
+  if keys[pygame.K_LEFT]:
     player_x -= speed
-  if keys[pygame.K_RIGHT] and player_x < 500 - player_width:
+  if keys[pygame.K_RIGHT]:
     player_x += speed
   
+  if player_x > 500 - player_width:
+    player_x = 0
+  if player_x < 0:
+    player_x = 500 - player_width
   #jumping controls
   if not isJump:
     """
@@ -121,6 +125,8 @@ while run:
         pygame.time.delay(2000)
         pygame.quit()
         quit()
+  
+
   #update the screen and draw the character
   window.fill((0, 0, 0))
   pygame.draw.rect(window, (0, 255, 0), (player_x, player_y, player_width, player_height))
