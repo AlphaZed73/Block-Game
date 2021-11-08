@@ -48,6 +48,7 @@ for coord in range(0,len(block_coordinates[0])):
 
 #scoreboard
 font = pygame.font.Font('slkscr.ttf', 12)
+font_large = pygame.font.Font('slkscr.ttf', 48)
 text = font.render(f"Score: {score} Lives: {lives}", True, (255, 255 , 255), (0, 0, 0))
 
 textRect = text.get_rect()
@@ -147,11 +148,27 @@ while run:
       block_coordinates[1][value] = 0
       block_coordinates[0][value] = randint(0, 480)
       if lives <= 0:
-        pygame.time.delay(2000)
-        pygame.quit()
-        quit()
+        run = False
 
-#end program
+#end program and game over screen
+font = pygame.font.Font('slkscr.ttf', 24)
+
+text = font_large.render('Game Over', True, (0, 0, 0), (255, 255, 255))
+text_score = font.render(f"Your Score: {score}", True, (0, 0, 0), (255, 255, 255))
+# create a rectangular object for the
+# text surface object
+textRect = text.get_rect()
+textRect_score = text_score.get_rect()
+ 
+# set the center of the rectangular object.
+textRect.center = (250, 250)
+textRect_score.center = (250, 300)
+window.fill((0, 0, 0))
+window.blit(text_score, textRect_score)
+window.blit(text, textRect)
+pygame.display.update()
+pygame.time.delay(5000)
+
 pygame.quit()
 quit()
 
