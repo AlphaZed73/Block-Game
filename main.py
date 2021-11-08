@@ -18,15 +18,15 @@ jump_height = 7
 jumpCount = jump_height
 fallingblock_height = 20
 fallingblock_width = 20
-enemy_speed=5
+enemy_speed = 10
 
 #matrix
 block_coordinates = [
   [
-    0, 0, 0, 0,0
+    0, 0, 0, 0
   ],
   [
-    0, 0, 0, 0,0
+    0, 0, 0, 0
   ]
 ]
 for coord in range(0,len(block_coordinates[0])):
@@ -79,9 +79,7 @@ while run:
     if block_coordinates[1][value] >= 480:
       block_coordinates[1][value] = 0
       block_coordinates[0][value] = randint(0,480)
-    
-      if enemy_speed<=20:
-        enemy_speed+=1
+
 
 #collisions
     if block_coordinates[1][value] >= player_y + player_height and block_coordinates[1][value] <= player_y and block_coordinates[0][value] >= player_y + player_height:
