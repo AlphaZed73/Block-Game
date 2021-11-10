@@ -4,7 +4,7 @@ from random import randint
 pygame.init()
 window = pygame.display.set_mode((500, 500))
 pygame.display.set_caption("AlphaZed's Block Game")
-cube = pygame.image.load("angry cube.png")
+cube = pygame.image.load("true_art.jpg")
 
 #mixer music (does not work in repl)
 pygame.mixer.init()
@@ -36,6 +36,7 @@ max_green = 64
 epilepsy = False
 window_fill = (0, 0, 0)
 epilepsy_limit = 20
+window_flash_time = randint(100, 400)
 
 #tickspeed in milliseconds
 tickspeed = 50
@@ -48,7 +49,8 @@ block_coordinates = [
   ]
 ]
 
-cube = pygame.transform.scale(cube, (fallingblock_width, fallingblock_height))
+r_cube = pygame.transform.scale(cube, (fallingblock_width, fallingblock_height))
+bg_cube = pygame.transform.scale(cube, (500, 500))
 
 #scoreboard
 font = pygame.font.Font('slkscr.ttf', 12)
@@ -82,6 +84,8 @@ while run:
   
   #update score and lives on the scoreboard
   text = font.render(f"Score: {score} Lives: {lives}", True, (255, 255 , 255), (0, 0, 0))
+
+  window_flash_time -= 1
 
   #quit button detection
   for event in pygame.event.get():
@@ -139,11 +143,15 @@ while run:
   
   pygame.draw.rect(window, (0, 255, 0), (player_x, player_y, player_width, player_height))
 
+  if window_flash_time < 0:
+    window.blit(bg_cube, (0, 0))
+    window_flash_time = randint(100, 400)
+
   #draw enemies
   for enemy in range(0,len(block_coordinates[0])):
     pygame.draw.rect(window, enemy_colors[enemy], (block_coordinates[0][enemy], block_coordinates[1][enemy], fallingblock_width, fallingblock_height))
     if not epilepsy:
-      window.blit(cube, (block_coordinates[0][enemy], block_coordinates[1][enemy]))
+      window.blit(r_cube, (block_coordinates[0][enemy], block_coordinates[1][enemy]))
   
   #draw scoreboard
   window.blit(text, textRect)
