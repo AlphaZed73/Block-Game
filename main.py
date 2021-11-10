@@ -4,12 +4,13 @@ from random import randint
 pygame.init()
 window = pygame.display.set_mode((500, 500))
 pygame.display.set_caption("AlphaZed's Block Game")
+cube = pygame.image.load("angry cube.png")
 
-#mixer music
+#mixer music (does not work in repl)
 pygame.mixer.init()
+pygame.mixer.music.load("Block game theme.wav")
 pygame.mixer.music.set_volume(4.0)
-pygame.mixer.music.load("theme.mp3")
-pygame.mixer.music.play()
+pygame.mixer.music.play(0)
 
 #variables and parameters
 lives = 3
@@ -32,6 +33,9 @@ enemy_colors = []
 min_red = 200
 max_blue = 64
 max_green = 64
+epilepsy = False
+window_fill = (0, 0, 0)
+epilepsy_limit = 20
 
 #tickspeed in milliseconds
 tickspeed = 50
@@ -43,8 +47,8 @@ block_coordinates = [
   [
   ]
 ]
-for coord in range(0,len(block_coordinates[0])):
-  block_coordinates[0][coord] = randint(0,480)
+
+cube = pygame.transform.scale(cube, (fallingblock_width, fallingblock_height))
 
 #scoreboard
 font = pygame.font.Font('slkscr.ttf', 12)
@@ -90,11 +94,21 @@ while run:
     player_x -= speed
   if keys[pygame.K_RIGHT]:
     player_x += speed
+
+  if keys[pygame.K_BACKSLASH] and not epilepsy:
+    epilepsy = True
+    epilepsy_limit = 200
+  if epilepsy_limit < 0:
+    epilepsy = False
+  if epilepsy:
+    epilepsy_limit -= 1
   
+
   if player_x > 500 - player_width:
     player_x = 0
   if player_x < 0:
     player_x = 500 - player_width
+
   #jumping controls
   if not isJump:
     """
@@ -115,14 +129,21 @@ while run:
     else:
       isJump = False
       jumpCount = jump_height
+  
 
   #update the screen and draw the character
-  window.fill((0, 0, 0))
+  if epilepsy:
+    window.fill((randint(0, 255), randint(0, 255), randint(0, 255)))
+  else:
+    window.fill(window_fill)
+  
   pygame.draw.rect(window, (0, 255, 0), (player_x, player_y, player_width, player_height))
 
   #draw enemies
   for enemy in range(0,len(block_coordinates[0])):
     pygame.draw.rect(window, enemy_colors[enemy], (block_coordinates[0][enemy], block_coordinates[1][enemy], fallingblock_width, fallingblock_height))
+    if not epilepsy:
+      window.blit(cube, (block_coordinates[0][enemy], block_coordinates[1][enemy]))
   
   #draw scoreboard
   window.blit(text, textRect)
@@ -136,7 +157,9 @@ while run:
     if block_coordinates[1][value] >= 480:
       block_coordinates[1][value] = 0
       block_coordinates[0][value] = randint(0, 480)
-      enemy_colors[value] = (randint(min_red, 255), randint(0, max_green), randint(0, max_blue))
+      
+    if epilepsy:
+      enemy_colors[value] = (randint(0, 255), randint(0, 255), randint(0, 255))
 
     #collisions
     enemy_hit_box = pygame.Rect(block_coordinates[0][value], block_coordinates[1][value], fallingblock_width, fallingblock_height)
