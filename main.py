@@ -1,16 +1,16 @@
 #imports and initialization
 import pygame
 from random import randint
+import sys
 pygame.init()
 window = pygame.display.set_mode((500, 500))
 pygame.display.set_caption("AlphaZed's Block Game")
-cube = pygame.image.load("true_art.jpg")
 
-#mixer music (does not work in repl)
+#mixer music
 pygame.mixer.init()
 pygame.mixer.music.load("Block game theme.wav")
 pygame.mixer.music.set_volume(4.0)
-pygame.mixer.music.play(0)
+pygame.mixer.music.play(-1)
 
 #variables and parameters
 lives = 3
@@ -33,32 +33,48 @@ enemy_colors = []
 min_red = 200
 max_blue = 64
 max_green = 64
-epilepsy = False
-window_fill = (0, 0, 0)
-epilepsy_limit = 20
-window_flash_time = randint(100, 400)
+game_over = pygame.mixer.Sound("gameover.wav")
+oof = pygame.mixer.Sound("oof.wav")
 
 #tickspeed in milliseconds
 tickspeed = 50
 
 #matrix for enemy coords
-block_coordinates = [
-  [
-  ],
-  [
-  ]
-]
+block_coordinates = [ [], [] ]
 
-r_cube = pygame.transform.scale(cube, (fallingblock_width, fallingblock_height))
-bg_cube = pygame.transform.scale(cube, (500, 500))
+for coord in range(0,len(block_coordinates[0])):
+  block_coordinates[0][coord] = randint(0,480)
 
 #scoreboard
-font = pygame.font.Font('slkscr.ttf', 12)
+font = pygame.font.Font('slkscr.ttf', 14)
 font_large = pygame.font.Font('slkscr.ttf', 48)
 text = font.render(f"Score: {score} Lives: {lives}", True, (255, 255 , 255), (0, 0, 0))
 
 textRect = text.get_rect()
-textRect.center = (70, 10)
+textRect.center = (80, 12)
+
+def endscreen(scr):
+  pygame.time.delay(1000)
+  pygame.mixer.music.stop()
+  pygame.mixer.Sound.play(game_over)
+  font = pygame.font.Font('slkscr.ttf', 24)
+
+  text = font_large.render('Game Over', True, (0, 0, 0), (255, 255, 255))
+  text_score = font.render(f"Your Score: {scr}", True, (0, 0, 0), (255, 255, 255))
+  # create a rectangular object for the
+  # text surface object
+  textRect = text.get_rect()
+  textRect_score = text_score.get_rect()
+   
+  # set the center of the rectangular object.
+  textRect.center = (250, 250)
+  textRect_score.center = (250, 300)
+  window.fill((0, 0, 0))
+  window.blit(text_score, textRect_score)
+  window.blit(text, textRect)
+  pygame.display.update()
+  pygame.mixer.music.stop()
+  pygame.time.delay(6000)
 
 run = True
 
@@ -85,34 +101,23 @@ while run:
   #update score and lives on the scoreboard
   text = font.render(f"Score: {score} Lives: {lives}", True, (255, 255 , 255), (0, 0, 0))
 
-  window_flash_time -= 1
-
   #quit button detection
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
-      run = False
+      pygame.quit()
+      sys.exit()
   
   #left and right controls
   keys = pygame.key.get_pressed()
-  if keys[pygame.K_LEFT]:
+  if keys[pygame.K_LEFT] or keys[pygame.K_a]:
     player_x -= speed
-  if keys[pygame.K_RIGHT]:
+  if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
     player_x += speed
-
-  if keys[pygame.K_BACKSLASH] and not epilepsy:
-    epilepsy = True
-    epilepsy_limit = 200
-  if epilepsy_limit < 0:
-    epilepsy = False
-  if epilepsy:
-    epilepsy_limit -= 1
   
-
   if player_x > 500 - player_width:
     player_x = 0
   if player_x < 0:
     player_x = 500 - player_width
-
   #jumping controls
   if not isJump:
     """
@@ -121,7 +126,7 @@ while run:
     if keys[pygame.K_DOWN] and y < 500 - player_height:
       y += speed
     """
-    if keys[pygame.K_UP]:
+    if keys[pygame.K_UP] or keys[pygame.K_w]:
       isJump = True
   else:
     if jumpCount >= -jump_height:
@@ -133,29 +138,16 @@ while run:
     else:
       isJump = False
       jumpCount = jump_height
-  
 
   #update the screen and draw the character
-  if epilepsy:
-    window.fill((randint(0, 255), randint(0, 255), randint(0, 255)))
-  else:
-    window.fill(window_fill)
-  
+  window.fill((0, 0, 0))
   pygame.draw.rect(window, (0, 255, 0), (player_x, player_y, player_width, player_height))
 
-  if window_flash_time < 0:
-    window.blit(bg_cube, (0, 0))
-    window_flash_time = randint(100, 400)
-
   #draw enemies
-  for enemy in range(0,len(block_coordinates[0])):
-    pygame.draw.rect(window, enemy_colors[enemy], (block_coordinates[0][enemy], block_coordinates[1][enemy], fallingblock_width, fallingblock_height))
-    if not epilepsy:
-      window.blit(r_cube, (block_coordinates[0][enemy], block_coordinates[1][enemy]))
+  
   
   #draw scoreboard
   window.blit(text, textRect)
-  pygame.display.update()
 
   #enemy logic (collisions and moving to the top)
   for value in range(0,len(block_coordinates[1])):
@@ -165,9 +157,7 @@ while run:
     if block_coordinates[1][value] >= 480:
       block_coordinates[1][value] = 0
       block_coordinates[0][value] = randint(0, 480)
-      
-    if epilepsy:
-      enemy_colors[value] = (randint(0, 255), randint(0, 255), randint(0, 255))
+      enemy_colors[value] = (randint(min_red, 255), randint(0, max_green), randint(0, max_blue))
 
     #collisions
     enemy_hit_box = pygame.Rect(block_coordinates[0][value], block_coordinates[1][value], fallingblock_width, fallingblock_height)
@@ -175,31 +165,20 @@ while run:
     collide = player_hit_box.colliderect(enemy_hit_box)
     #life check
     if collide == True:
+      pygame.mixer.Sound.play(oof, )
       lives -= 1
       block_coordinates[1][value] = 0
       block_coordinates[0][value] = randint(0, 480)
       if lives <= 0:
         run = False
+        pygame.time.delay(1000)
+
+  for enemy in range(0,len(block_coordinates[0])):
+    pygame.draw.rect(window, enemy_colors[enemy], (block_coordinates[0][enemy], block_coordinates[1][enemy], fallingblock_width, fallingblock_height))
+  pygame.display.update()
 
 #end program and game over screen
-font = pygame.font.Font('slkscr.ttf', 24)
-
-text = font_large.render('Game Over', True, (0, 0, 0), (255, 255, 255))
-text_score = font.render(f"Your Score: {score}", True, (0, 0, 0), (255, 255, 255))
-# create a rectangular object for the
-# text surface object
-textRect = text.get_rect()
-textRect_score = text_score.get_rect()
- 
-# set the center of the rectangular object.
-textRect.center = (250, 250)
-textRect_score.center = (250, 300)
-window.fill((0, 0, 0))
-window.blit(text_score, textRect_score)
-window.blit(text, textRect)
-pygame.display.update()
-pygame.time.delay(5000)
+endscreen(score)
 
 pygame.quit()
-quit()
-
+sys.exit()
