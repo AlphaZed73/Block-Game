@@ -143,9 +143,6 @@ while run:
   window.fill((0, 0, 0))
   pygame.draw.rect(window, (0, 255, 0), (player_x, player_y, player_width, player_height))
 
-  #draw enemies
-  
-  
   #draw scoreboard
   window.blit(text, textRect)
 
@@ -173,6 +170,7 @@ while run:
         run = False
         pygame.time.delay(1000)
 
+  #draw enemies
   for enemy in range(0,len(block_coordinates[0])):
     pygame.draw.rect(window, enemy_colors[enemy], (block_coordinates[0][enemy], block_coordinates[1][enemy], fallingblock_width, fallingblock_height))
   pygame.display.update()
