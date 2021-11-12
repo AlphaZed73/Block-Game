@@ -35,6 +35,13 @@ max_blue = 64
 max_green = 64
 game_over = pygame.mixer.Sound("gameover.wav")
 oof = pygame.mixer.Sound("oof.wav")
+epilepsy = False
+hardcore = False
+screen_color = (0, 0, 0)
+angry_cube = pygame.image.load("true_art.jpg")
+small_cube = pygame.transform.scale(angry_cube, (fallingblock_width, fallingblock_height))
+large_cube = pygame.transform.scale(angry_cube, (500, 500))
+flash_counter = randint(100, 400)
 
 #tickspeed in milliseconds
 tickspeed = 50
@@ -106,6 +113,17 @@ while run:
     if event.type == pygame.QUIT:
       pygame.quit()
       sys.exit()
+    if event.type == pygame.KEYDOWN:
+      if event.key == pygame.K_SLASH and not epilepsy:
+        epilepsy = True
+        hardcore = False
+      elif event.key == pygame.K_SLASH and epilepsy:
+        epilepsy = False
+      if event.key == pygame.K_h and not hardcore:
+        hardcore = True
+        epilepsy = False
+      elif event.key == pygame.K_h and hardcore:
+        hardcore = False
   
   #left and right controls
   keys = pygame.key.get_pressed()
@@ -140,7 +158,8 @@ while run:
       jumpCount = jump_height
 
   #update the screen and draw the character
-  window.fill((0, 0, 0))
+  screen_color = (randint(0, 255), randint(0, 255), randint(0, 255)) if epilepsy else (0, 0, 0)
+  window.fill(screen_color)
   pygame.draw.rect(window, (0, 255, 0), (player_x, player_y, player_width, player_height))
 
   #draw scoreboard
@@ -150,11 +169,18 @@ while run:
   for value in range(0,len(block_coordinates[1])):
     block_coordinates[1][value] += randint(1, enemy_speed)
     
+    if epilepsy:
+      enemy_colors[value] = (randint(0, 255), randint(0, 255), randint(0, 255))
+    elif hardcore:
+      meep = randint(20, 30)
+      enemy_colors[value] = (meep, meep, meep)
+
     #move to top
     if block_coordinates[1][value] >= 480:
       block_coordinates[1][value] = 0
       block_coordinates[0][value] = randint(0, 480)
-      enemy_colors[value] = (randint(min_red, 255), randint(0, max_green), randint(0, max_blue))
+      if not epilepsy and not hardcore:
+        enemy_colors[value] = (randint(min_red, 255), randint(0, max_green), randint(0, max_blue))
 
     #collisions
     enemy_hit_box = pygame.Rect(block_coordinates[0][value], block_coordinates[1][value], fallingblock_width, fallingblock_height)
@@ -162,7 +188,7 @@ while run:
     collide = player_hit_box.colliderect(enemy_hit_box)
     #life check
     if collide == True:
-      pygame.mixer.Sound.play(oof, )
+      pygame.mixer.Sound.play(oof)
       lives -= 1
       block_coordinates[1][value] = 0
       block_coordinates[0][value] = randint(0, 480)
@@ -170,9 +196,19 @@ while run:
         run = False
         pygame.time.delay(1000)
 
+  #random flashes
+  if not epilepsy and not hardcore:
+    flash_counter -= 1
+  if flash_counter < 0 and not epilepsy and not hardcore:
+    flash_counter = randint(100, 400)
+    window.blit(large_cube, (0, 0))
+
   #draw enemies
   for enemy in range(0,len(block_coordinates[0])):
     pygame.draw.rect(window, enemy_colors[enemy], (block_coordinates[0][enemy], block_coordinates[1][enemy], fallingblock_width, fallingblock_height))
+    if not epilepsy and not hardcore:
+      window.blit(small_cube, (block_coordinates[0][enemy], block_coordinates[1][enemy]))
+
   pygame.display.update()
 
 #end program and game over screen
